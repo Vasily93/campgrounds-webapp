@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New</title>
-</head>
-<body>
+<% layout('layouts/boilerplate.ejs') %> 
+
     <h1>Add new Campgound:</h1>
     <form action="/campgrounds"  method="POST">
         <label for="title">Title: </label>
@@ -14,5 +8,3 @@
         <input id="location" name="campground[location]" type="text">
         <button>Add new Campground</button>
     </form>
-</body>
-</html>

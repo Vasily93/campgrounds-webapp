@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campgroud</title>
-</head>
-<body>
+<% layout('layouts/boilerplate.ejs') %> 
+
     <h1><%= campground.title %> </h1>
     <h3>Location: <%= campground.location %></h3>
     <a href="/campgrounds/<%=campground._id%>/edit">Edit <%= campground.title %></a>
@@ -14,5 +8,3 @@
     </form>
     <hr>
     <a href="/campgrounds">Back to all Campgrounds</a>
-</body>
-</html>

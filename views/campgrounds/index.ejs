@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAmpgrounds</title>
-</head>
-<body>
+<% layout('layouts/boilerplate.ejs') %> 
+
     <h1>All Campgrounds:</h1>
     <a href="/campgrounds/new">ADD NEW CAMPGROUND</a>
+    <hr>
     <ul>
     <% campgrounds.forEach(camp => { %>
         <li id="<%= camp._id%>">
@@ -17,5 +12,3 @@
         </li>
     <% }) %>
     </ul>
-</body>
-</html>
