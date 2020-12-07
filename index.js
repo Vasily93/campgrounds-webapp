@@ -2,12 +2,13 @@ const express = require('express');
 const port = 3000;
 const path = require('path');
 const Campgroud = require('./models/campground');
+const Review = require('./models/review');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const Joi = require('joi');
-const {campgroundSchema} = require('./schemas');
+const {campgroundSchema, reviewSchema} = require('./schemas');
 // const morgan = require('morgan');
 
 //mongo db connection
@@ -45,6 +46,16 @@ const validateCampground = (req, res, next) => {
     }
 }
 
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(el => el.message).join(' , =>')
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+}
+
 //Routes below
 
 app.get('/', (req, res) => {
@@ -58,7 +69,6 @@ app.get('/campgrounds',catchAsync( async (req, res, next) => {
 
 app.post('/campgrounds', validateCampground, catchAsync( async (req, res, next) => {
     const campground = new Campgroud(req.body.campground);
-    console.log(campground)
     await campground.save();
     res.redirect('/campgrounds')    
 }))
@@ -76,6 +86,16 @@ app.delete('/campgrounds/:id', catchAsync( async (req, res, next) => {
     res.redirect('/campgrounds')
 }))
 
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync( async (req, res) => {
+    const {id} = req.params;
+    const campground = await Campgroud.findById(id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await campground.save();
+    await review.save();
+    res.redirect(`/campgrounds/${id}`)
+}))
+
 app.get('/campgrounds/new' , (req, res) => {
     res.render('campgrounds/new')
 })
@@ -89,7 +109,7 @@ app.get('/campgrounds/:id/edit', catchAsync( async (req, res, next) => {
 
 app.get('/campgrounds/:id', catchAsync( async (req, res, next) => {
     const {id} = req.params;
-    const campground = await Campgroud.findById(id);
+    const campground = await Campgroud.findById(id).populate({path: 'reviews'});
     res.render('campgrounds/show', {campground})
 }))
 
