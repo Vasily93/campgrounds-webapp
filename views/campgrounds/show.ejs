@@ -1,37 +1,47 @@
 <% layout('layouts/boilerplate.ejs') %> 
-<div>
-    <h1><%= campground.title %> </h1>
-    <img style="height: 300px;" src="<%= campground.image %>">
-    <h3>Location: <%= campground.location %></h3>
-    <h5>Description: <%= campground.description %></h5>
-    <h5>Price: $<%= campground.price %></h5>
-</div>
-<hr>
-<div>
-    <h5>Reviews:</h5>
-    <% campground.reviews.forEach(review => { %>
-        <p>* <%= review.body%> <%= review.rating %> Stars</p>
-    <% }) %>
-</div>
+<div class="row">
+    <div class="col-6">
+        
+        <div>
+            <h1><%= campground.title %> </h1>
+            <img style="height: 300px;" src="<%= campground.image %>">
+            <h3>Location: <%= campground.location %></h3>
+            <h5>Description: <%= campground.description %></h5>
+            <h5>Price: $<%= campground.price %></h5>
+        </div>
+        <hr>
+        <a href="/campgrounds/<%=campground._id%>/edit">Edit <%= campground.title %></a>
+        <form method="POST" action="/campgrounds/<%=campground._id%>?_method=DELETE">
+            <button class="btn btn-success">Delete <%= campground.title %></button>
+        </form>
+        <hr>
+        <a href="/campgrounds">Back to all Campgrounds</a>
 
-
-<a href="/campgrounds/<%=campground._id%>/edit">Edit <%= campground.title %></a>
-<form method="POST" action="/campgrounds/<%=campground._id%>?_method=DELETE">
-    <button class="btn btn-success">Delete <%= campground.title %></button>
-</form>
-<hr>
-<a href="/campgrounds">Back to all Campgrounds</a>
-
-
-<h4>Leave a Review</h4>
-<form action="/campgrounds/<%= campground._id %>/reviews " method="POST" class="validated-form" novalidate>
-    <div>
-        <label for="rating" class="form-label">Rating: </label>
-        <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
     </div>
-    <div>
-        <label for="body">Review:</label>
-        <textarea class="form-control" name="review[body]" id="dody" cols="20" rows="5" required></textarea>
+    <div class="col-6" style="background-color: rgba(0, 0, 0, 0.03);">
+        <h4>Leave a Review</h4>
+        <form action="/campgrounds/<%= campground._id %>/reviews " method="POST" class="validated-form" novalidate>
+            <div>
+                <label for="rating" class="form-label">Rating: </label>
+                <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
+            </div>
+            <div>
+                <label for="body">Review:</label>
+                <textarea class="form-control" name="review[body]" id="dody" cols="20" rows="5" required></textarea>
+            </div>
+            <button class="btn btn-success">Submit</button>
+        </form>
+        <h5>Reviews:</h5>
+        <% campground.reviews.forEach(review => { %>
+            
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p>* <%= review.body%> <%= review.rating %> Stars</p>
+                    <form method="POST" action="/campgrounds/<%=campground._id%>/reviews/<%= review._id %>?_method=DELETE">
+                        <button class=" btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
     </div>
-    <button class="btn btn-success">Submit</button>
-</form>
+</div>

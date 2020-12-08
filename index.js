@@ -96,6 +96,13 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync( async (req, res
     res.redirect(`/campgrounds/${id}`)
 }))
 
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Campgroud.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+}))
+
 app.get('/campgrounds/new' , (req, res) => {
     res.render('campgrounds/new')
 })
@@ -109,7 +116,7 @@ app.get('/campgrounds/:id/edit', catchAsync( async (req, res, next) => {
 
 app.get('/campgrounds/:id', catchAsync( async (req, res, next) => {
     const {id} = req.params;
-    const campground = await Campgroud.findById(id).populate({path: 'reviews'});
+    const campground = await Campgroud.findById(id).populate('reviews');
     res.render('campgrounds/show', {campground})
 }))
 
