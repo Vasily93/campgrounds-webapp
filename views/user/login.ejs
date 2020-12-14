@@ -1,0 +1,15 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <div class="col-md-6">
+        <form action="/login" method="POST"> 
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <label for="username" class="visually-hidden">Username</label>
+            <input name="username" type="text" id="inputUsername" class="form-control" placeholder="Username" required>
+            
+            <label for="password" class="visually-hidden">Password</label>
+            <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>
+          </form>
+    </div>
+</div>
