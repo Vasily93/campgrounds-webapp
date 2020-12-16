@@ -31,7 +31,6 @@ router.post('/', isLoggedIn, validateCampground, catchAsync( async (req, res, ne
 
 router.put('/:id', isLoggedIn, validateCampground, catchAsync( async (req, res, next) => {
     const {id} = req.params;
-    console.log(req.body.campground)
     await Campgroud.findByIdAndUpdate(id, {...req.body.campground});
     req.flash('success', 'Successfuly updated campground!')
     res.redirect(`/campgrounds/${id}`)
