@@ -9,19 +9,21 @@ router.get('/register', (req, res) => {
     res.render('user/register')
 })
 
-router.post('/register', catchAsync(async (req, res) => {
+router.post('/register', catchAsync(async (req, res, next) => {
     try{
     const {email, username, password} = req.body;
     const user = new User({ email, username});
     const newUser = await User.register(user, password);
-    console.log(newUser)
-    await newUser.save()
+    await newUser.save();
+    req.login(newUser, err => {
+        if(err) return next(err);
+        req.flash('success', 'Welcome to CampApp!')
+    res.redirect('/campgrounds')
+    })
     } catch(e) {
         req.flash('error', e.message)
         res.redirect('/register')
     }
-    req.flash('success', 'Welcome to CampApp!')
-    res.redirect('/campgrounds')
 }))
 
 router.get('/login', (req, res) => {
@@ -29,8 +31,9 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), (req, res) => {
-    req.flash('success', 'welcome back!')
-    res.redirect('/campgrounds')
+    req.flash('success', 'welcome back!');
+    const redirect = req.session.returnTo || '/campgrounds';
+    res.redirect(redirect)
 })
 
 router.get('/logout', (req, res) => {
