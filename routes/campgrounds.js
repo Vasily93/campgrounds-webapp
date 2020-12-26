@@ -16,6 +16,15 @@ const validateCampground = (req, res, next) => {
     }
 }
 
+const isAuthor = async(req, res, next) => {
+    const {id} = req.params;
+    const campground = await Campgroud.findById(id);
+    if(!campground.author.equals(req.user._id)) {
+        req.flash('error',  'This campground is not posted by you!');
+        return res.redirect(`/campgrounds/${id}`);
+    }
+    next()
+}
 
 router.get('/',catchAsync( async (req, res, next) => {
     const campgrounds = await Campgroud.find({});
@@ -24,19 +33,20 @@ router.get('/',catchAsync( async (req, res, next) => {
 
 router.post('/', isLoggedIn, validateCampground, catchAsync( async (req, res, next) => {
     const campground = new Campgroud(req.body.campground);
+    campground.author = req.user._id;
     await campground.save();
     req.flash('success', 'Successfuly made a new campground!')
     res.redirect('/campgrounds')    
 }))
 
-router.put('/:id', isLoggedIn, validateCampground, catchAsync( async (req, res, next) => {
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync( async (req, res, next) => {
     const {id} = req.params;
     await Campgroud.findByIdAndUpdate(id, {...req.body.campground});
     req.flash('success', 'Successfuly updated campground!')
     res.redirect(`/campgrounds/${id}`)
 }))
 
-router.delete('/:id', isLoggedIn, catchAsync( async (req, res, next) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync( async (req, res, next) => {
     const {id} = req.params;
     await Campgroud.findByIdAndDelete(id);
     req.flash('success', 'Successfuly deleted campground!')
@@ -48,7 +58,7 @@ router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new')
 })
 
-router.get('/:id/edit', isLoggedIn, catchAsync( async (req, res, next) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync( async (req, res, next) => {
     const {id} = req.params;
     const campground = await Campgroud.findById(id);
     res.render('campgrounds/edit', {campground})
@@ -57,7 +67,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync( async (req, res, next) => {
 
 router.get('/:id', catchAsync( async (req, res, next) => {
     const {id} = req.params;
-    const campground = await Campgroud.findById(id).populate('reviews');
+    const campground = await Campgroud.findById(id).populate('reviews').populate('author');
     if(!campground) {
         req.flash('error' , 'Can not find that campground')
         return res.redirect('/campgrounds');
