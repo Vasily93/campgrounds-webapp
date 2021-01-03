@@ -5,7 +5,15 @@ const ExpressError = require('../utils/ExpressError');
 const {campgroundSchema} = require('../schemas');
 const Campground = require('../models/campground');
 const { isLoggedIn, isAuthor, validateCampground } = require('../middleware');
-const {index, create, edit, deleteCamp, show, renderNewForm, fetchEditCamp, renderEditForm} = require('../controllers/campgrounds');
+const {index,
+        create,
+        edit,
+        deleteCamp,
+        show,
+        renderNewForm,
+        fetchEditCamp,
+        renderEditForm
+    } = require('../controllers/campgrounds');
 
 router.get('/',catchAsync(index))
 
