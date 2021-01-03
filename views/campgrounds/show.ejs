@@ -11,7 +11,7 @@
             <p>Posted by: $<%= campground.author.username %></p>
         </div>
         <hr>
-        <% if(campground.author.equals(currentUser._id)) { %>
+        <% if(currentUser && campground.author.equals(currentUser._id)) { %>
             <a href="/campgrounds/<%=campground._id%>/edit">Edit <%= campground.title %></a>
             <form method="POST" action="/campgrounds/<%=campground._id%>?_method=DELETE">
                 <button class="btn btn-success">Delete <%= campground.title %></button>
@@ -22,6 +22,7 @@
 
     </div>
     <div class="col-6" style="background-color: rgba(0, 0, 0, 0.03);">
+        <% if (currentUser) { %>
         <h4>Leave a Review</h4>
         <form action="/campgrounds/<%= campground._id %>/reviews " method="POST" class="validated-form" novalidate>
             <div>
@@ -34,15 +35,20 @@
             </div>
             <button class="btn btn-success">Submit</button>
         </form>
+        <% } %>
+
         <h5>Reviews:</h5>
         <% campground.reviews.forEach(review => { %>
             
             <div class="card mb-3">
                 <div class="card-body">
+                    <p><strong><%= review.author.username %> </strong></p>
                     <p>* <%= review.body%> <%= review.rating %> Stars</p>
-                    <form method="POST" action="/campgrounds/<%=campground._id%>/reviews/<%= review._id %>?_method=DELETE">
-                        <button class=" btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <% if(currentUser && review.author.equals(currentUser._id)) { %>
+                        <form method="POST" action="/campgrounds/<%=campground._id%>/reviews/<%= review._id %>?_method=DELETE">
+                            <button class=" btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    <% } %>
                 </div>
             </div>
         <% }) %>
