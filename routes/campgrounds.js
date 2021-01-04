@@ -14,23 +14,18 @@ const {index,
         fetchEditCamp,
         renderEditForm
     } = require('../controllers/campgrounds');
-
-router.get('/',catchAsync(index))
-
-router.post('/', isLoggedIn, validateCampground, catchAsync(create))
-
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(edit))
-
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(deleteCamp))
-
+router.route('/')
+    .get(catchAsync(index))
+    .post(isLoggedIn, validateCampground, catchAsync(create))
 
 router.get('/new', isLoggedIn, renderNewForm)
 
+router.route('/:id')
+    .put(isLoggedIn, isAuthor, validateCampground, catchAsync(edit))
+    .get(catchAsync(show))
+    .delete(isLoggedIn, isAuthor, catchAsync(deleteCamp))
+
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(fetchEditCamp))
-
-
-router.get('/:id', catchAsync(show))
-
 router.get('/:id/edit', isLoggedIn, renderEditForm)
 
 module.exports = router;

@@ -11,13 +11,13 @@ const {renderRegisterForm,
     logout
 } = require('../controllers/users');
 
-router.get('/register', renderRegisterForm)
+router.route('/register')
+    .get(renderRegisterForm)
+    .post(catchAsync(register));
 
-router.post('/register', catchAsync(register))
-
-router.get('/login', renderLogin)
-
-router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), login)
+router.route('/login')
+    .get(renderLogin)
+    .post(passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), login)
 
 router.get('/logout', logout)
 
